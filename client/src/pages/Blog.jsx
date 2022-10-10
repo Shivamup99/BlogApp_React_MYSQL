@@ -13,7 +13,7 @@ const Blog = () => {
   const state = useLocation().state
   const [value,setValue] = useState(state?.desc || '')
   const [title,setTitle] = useState(state?.title || '');
-  const [file,setFile] = useState(null)
+  const [file,setFile] = useState('')
   const [cat,setCat] = useState(state?.cat || '')
   const navigate = useNavigate()
   const upload = async()=>{

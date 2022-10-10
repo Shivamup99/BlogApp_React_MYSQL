@@ -1,63 +1,47 @@
-import React from 'react'
+import React ,{useState , useEffect} from 'react'
 import Navbar from '../components/navbar/Navbar'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation} from 'react-router-dom'
 import './style.scss'
-import { useState } from 'react'
 import axios from 'axios'
-import { useEffect } from 'react'
+import Footer from '../components/footer/Footer'
+import Loading from '../components/loader/Loading'
+import ReactPaginate from "react-paginate";
+import { useContext } from 'react'
+import { AuthContext } from '../context/authContext'
+
 const Home = () => {
   const [posts,setPosts] = useState([])
-
+  const [loading,setLoading] = useState(false)
+  const {currentUser} = useContext(AuthContext)
+  
   const cat = useLocation().search
   //console.log(cat)
 
   const fetchPosts =async()=>{
+    setLoading(true)
     const res = await axios.get(`/v1/blogs/${cat}`)
     setPosts(res.data.reverse())
+    setLoading(false)
   }
 
   useEffect(()=>{
     fetchPosts()
   },[cat])
-  // const posts =[
-  //   {
-  //     image:'https://images.pexels.com/photos/302897/pexels-photo-302897.jpeg?auto=compress&cs=tinysrgb&w=600',
-  //     title:'Fresh up yourself',
-  //     desc:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident repellendus itaque nisi mollitia delectus totam enim, velit laboriosam quas illum minus at rem laudantium. Id veniam aspernatur beatae quasi labore.',
-  //     id:1
-  //   },
-  //   {
-  //     image:'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load',
-  //     title:'Cute pet of dog',
-  //     desc:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident repellendus itaque nisi mollitia delectus totam enim, velit laboriosam quas illum minus at rem laudantium. Id veniam aspernatur beatae quasi labore.',
-  //     id:2
-  //   },
-  //   {
-  //     image:'https://images.pexels.com/photos/2387418/pexels-photo-2387418.jpeg?auto=compress&cs=tinysrgb&w=600',
-  //     title:'The beauty of mountains',
-  //     desc:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident repellendus itaque nisi mollitia delectus totam enim, velit laboriosam quas illum minus at rem laudantium. Id veniam aspernatur beatae quasi labore.',
-  //     id:3 
-  //   },
-  //   {
-  //     image:'https://images.pexels.com/photos/2831299/pexels-photo-2831299.jpeg?auto=compress&cs=tinysrgb&w=600',
-  //     title:'Nature always try to show their best',
-  //     desc:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident repellendus itaque nisi mollitia delectus totam enim, velit laboriosam quas illum minus at rem laudantium. Id veniam aspernatur beatae quasi labore.',
-  //     id:4
-  //   },
-  //   {
-  //     image:'https://images.pexels.com/photos/7234302/pexels-photo-7234302.jpeg?auto=compress&cs=tinysrgb&w=600',
-  //     title:'Watching movies in cinema is wow',
-  //     desc:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident repellendus itaque nisi mollitia delectus totam enim, velit laboriosam quas illum minus at rem laudantium. Id veniam aspernatur beatae quasi labore.',
-  //     id:5
-  //   },
-  //   {
-  //     image:'https://images.pexels.com/photos/4158/apple-iphone-smartphone-desk.jpg?auto=compress&cs=tinysrgb&w=600',
-  //     title:'Technology make us faster and lazy',
-  //     desc:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident repellendus itaque nisi mollitia delectus totam enim, velit laboriosam quas illum minus at rem laudantium. Id veniam aspernatur beatae quasi labore.',
-  //     id:6
-  //   },
 
-  // ]
+  const [pageNumber,setPageNumber] = useState(0)
+  const blogPerPage = 5
+  const pagesVisited = pageNumber * blogPerPage;
+
+  // const displayblogs = blogs.slice(pagesVisited, pagesVisited + blogPerPage).map((item)=>(
+  //   <blogShop blog={item} key={item.id}/>
+  // ))
+
+  const pageCount = Math.ceil(posts.length/blogPerPage)
+
+  const handlePageClick =({selected})=>{
+    setPageNumber(selected)
+    window.scrollTo(0,0)
+  }
 
   // for avoiding the html tag
   
@@ -70,21 +54,39 @@ const Home = () => {
     <div className='home'>
       <Navbar/>
       <div className="home-post">
-        {posts.map((post)=>(
-          <div className="h-post" key={post.id}>
-            <div className="img">
-              <img src={`/upload/${post.img}`} alt={post.title} />
+         
+        {loading ?<Loading/>:(
+           posts.slice(pagesVisited, pagesVisited + blogPerPage).map((post)=>(
+            <div className="h-post" key={post.id}>
+              <div className="img">
+                <img src={`/upload/${post.img}`} alt={post.title} />
+              </div>
+              <div className="content">
+                  <h1>{post.title}</h1>
+                  <p>{avoidHtml(post.desc)}</p>
+                  {
+                    currentUser ?  <Link className='read' to={`/post/${post.id}`}>read more</Link> :<Link className='read' to='/login'>read more</Link>
+                  }
+              </div>
             </div>
-            <div className="content">
-              <Link to={`/post/${post.id}`}>
-                <h1>{post.title}</h1>
-                </Link>
-                <p>{avoidHtml(post.desc)}</p>
-                <Link className='read' to={`/post/${post.id}`}>read more</Link>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
+      <div className="shop-pegination">
+     <ReactPaginate
+       previousLabel={"<< Previous"}
+       nextLabel={"Next >>"}
+       onPageChange={handlePageClick}
+       pageCount={pageCount}
+       pageClassName="page-item-none"
+       containerClassName={"paginationBttns"}
+       previousLinkClassName={"previousBttn"}
+       nextLinkClassName={"nextBttn"}
+       disabledClassName={"paginationDisabled"}
+       activeClassName={"paginationActive"}
+     />
+   </div>
+      <Footer/>
     </div>
   )
 }

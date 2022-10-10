@@ -83,6 +83,48 @@
       }
     }
   }
+  .shop-pegination{
+    margin-top: 90px;
+    display: flex !important;
+    justify-content: center;
+    .paginationBttns{
+        width: 99%;
+        height: 40px;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        a{
+            padding: 5px 10px;
+            margin: 8px;
+            border-radius: 5px;
+            border: 1px solid #000000;
+            color: #000000;
+            cursor: pointer;
+            &:hover{
+                color: #ffffff;
+                background-color: #ff0000;
+            }
+        }
+        .paginationActive{
+            a{
+                color: #ffffff;
+                background-color: #ff0000; 
+            }
+        }
+        .paginationDisabled a{
+            color: rgba(128,128,128,0.11);
+            background-color: rgba(128,128,128,.11);
+            &:hover{
+                color: rgba(128,128,128,0.11);
+                background-color: rgba(128,128,128,.11);
+            }
+        }
+        .page-item-none{
+            display: none;
+        }
+    } 
+}
+
 }
 
 // single page style

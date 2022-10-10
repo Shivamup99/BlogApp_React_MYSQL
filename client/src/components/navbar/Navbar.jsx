@@ -1,11 +1,23 @@
 import React from "react";
+import { useState } from "react";
 import { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import "./nav.scss";
 
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
+  const navigate = useNavigate()
+  const [open,setOpen] = useState(false)
+
+  const handleLogout =async()=>{
+     await logout()
+     setOpen(!open)
+     navigate('/')
+  }
+  const handleDrop =()=>{
+     setOpen(!open)
+  }
   return (
     <div className="navbar">
       <div className="nav-content">
@@ -25,24 +37,37 @@ const Navbar = () => {
           <NavLink to="/?cat=beauty">Fashion</NavLink>
           <NavLink to="/?cat=city">Bali</NavLink>
 
-          <div className="nav-auth">
+          <div className="nav-auth" >
+           
             {currentUser ? (
-              currentUser.image === null ? (
-                <span onClick={logout}>{currentUser.username[0]}</span>
+               <div className="auth-model" onClick={handleDrop}>
+                {currentUser.image === null ? (
+                <span>{currentUser.username[0]}</span>
               ) : (
                 <img
                   src={currentUser.image}
-                  onClick={logout}
                   alt={currentUser.id}
                 />
-              )
-            ) : (
+              )}
+               </div>  
+            )
+            : (
               // <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsQumv-mukFg5cl2QVjlq3J0wq985H9wRNvw&usqp=CAU' alt='dkdk'/>
               <Link to="/login">Login</Link>
             )}
-          </div>
+            
+            {open &&
+             <div className="drop">
+            <div className="drop-data">
+              <Link to='/user/profile'>Profile</Link>
+              <p onClick={handleLogout}>Logout</p>
+            </div>
+            </div> 
+            }
+            </div>
           {currentUser && <NavLink to="/create">Write</NavLink>}
         </div>
+      
       </div>
     </div>
   );

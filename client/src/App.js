@@ -7,7 +7,7 @@ import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Blog from './pages/Blog'
 import Single from './pages/Single'
-import Art from './pages/navpages/Art'
+import Profile from './pages/profile/Profile';
 const App = () => {
   return (
     <BrowserRouter>
@@ -18,7 +18,7 @@ const App = () => {
       <Route path='/register' element={<Register/>}/>
       <Route path='/create' element={<Blog/>}/>
       <Route path='/post/:id' element={<Single/>}/>
-      <Route path='/?cart=art' element={<Art/>}/>
+      <Route path='/user/profile' element={<Profile/>}/>
      </Routes>
    </div>
    <ToastContainer/>
