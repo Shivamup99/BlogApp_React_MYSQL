@@ -8,6 +8,7 @@ import Register from './pages/auth/Register'
 import Blog from './pages/Blog'
 import Single from './pages/Single'
 import Profile from './pages/profile/Profile';
+import EditProfile from './pages/profile/EditProfile';
 const App = () => {
   return (
     <BrowserRouter>
@@ -18,7 +19,8 @@ const App = () => {
       <Route path='/register' element={<Register/>}/>
       <Route path='/create' element={<Blog/>}/>
       <Route path='/post/:id' element={<Single/>}/>
-      <Route path='/user/profile' element={<Profile/>}/>
+      <Route path='/user/profile/:id' element={<Profile/>}/>
+      <Route path='/edit/profile/:id' element={<EditProfile/>}/>
      </Routes>
    </div>
    <ToastContainer/>

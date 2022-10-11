@@ -59,7 +59,7 @@ const Navbar = () => {
             {open &&
              <div className="drop">
             <div className="drop-data">
-              <Link to='/user/profile'>Profile</Link>
+              <Link to={`/user/profile/${currentUser.id}`}>Profile</Link>
               <p onClick={handleLogout}>Logout</p>
             </div>
             </div> 
